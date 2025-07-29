@@ -6,8 +6,8 @@
   <title>MyDigitalHub - Digital Subscriptions</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ✅ PayPal SDK with card funding enabled -->
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID_HERE&currency=USD&components=buttons&enable-funding=card"></script>
+  <!-- ✅ Live PayPal SDK with Card Buttons -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AfqpacUeuOAbye2O9J9dNJU7hkwTXfTsay3_Yt1Yugr6LU8KEMGUCYXMhHq886CdIfGPA0F7UAl4RSIL&currency=USD&components=buttons&enable-funding=card"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
@@ -101,7 +101,7 @@
             layout: 'horizontal',
             color: 'blue',
             shape: 'pill',
-            label: 'pay' // 'pay' instead of 'paypal' shows broader payment options
+            label: 'pay'
           },
           createOrder: function(data, actions) {
             return actions.order.create({
