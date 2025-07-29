@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MyDigitalHub - Digital Subscriptions</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- PayPal SDK (replace CLIENT_ID with your real one for live mode) -->
+
+  <!-- ✅ PayPal SDK with card funding enabled -->
   <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID_HERE&currency=USD&components=buttons&enable-funding=card"></script>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -42,7 +43,7 @@
     const products = [
       {
         name: 'DSTV Stream',
-        price: 6.00, // USD
+        price: 6.00,
         description: 'Stream live DSTV channels for 1 month.',
         image: 'assets/dstv.jpg'
       },
@@ -100,7 +101,7 @@
             layout: 'horizontal',
             color: 'blue',
             shape: 'pill',
-            label: 'paypal'
+            label: 'pay' // 'pay' instead of 'paypal' shows broader payment options
           },
           createOrder: function(data, actions) {
             return actions.order.create({
