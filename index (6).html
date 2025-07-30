@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MyDigitalHub - Digital Subscriptions</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ Live PayPal SDK with Card Buttons -->
+  <script src="https://www.paypal.com/sdk/js?client-id=AfqpacUeuOAbye2O9J9dNJU7hkwTXfTsay3_Yt1Yugr6LU8KEMGUCYXMhHq886CdIfGPA0F7UAl4RSIL&currency=USD&components=buttons&enable-funding=card"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow-md p-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-blue-600">MyDigitalHub</h1>
+    <nav>
+      <a href="#" class="px-4 text-gray-700 hover:text-blue-500">Home</a>
+      <a href="#products" class="px-4 text-gray-700 hover:text-blue-500">Products</a>
+      <a href="#contact" class="px-4 text-gray-700 hover:text-blue-500">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="p-6">
+    <section class="text-center mb-10">
+      <h2 class="text-3xl font-bold mb-2">Your One-Stop Shop for Digital Subscriptions</h2>
+      <p class="text-gray-600">Affordable plans, PayPal secure checkout in USD!</p>
+    </section>
+
+    <!-- Product Grid -->
+    <section id="products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-6"></section>
+  
+<!-- Paystack Payment Button -->
+<div class="text-center my-8">
+  <button onclick="payWithPaystack()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+    Pay with Paystack
+  </button>
+</div>
+
+
+
+<!-- Paystack Custom Amount Form -->
+<div class="text-center my-8">
+  <input id="amountInput" type="number" min="1" placeholder="Enter amount in USD"
+         class="border border-gray-300 rounded px-4 py-2 mr-2 w-48 text-center" />
+  <button onclick="payWithPaystack()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded">
+    Pay with Paystack
+  </button>
+  <p id="validationMessage" class="text-red-600 mt-2"></p>
+</div>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+function payWithPaystack() {
+    var amountField = document.getElementById('amountInput');
+    var messageField = document.getElementById('validationMessage');
+    var amountValue = parseFloat(amountField.value);
+
+    if (isNaN(amountValue) || amountValue < 1) {
+        messageField.textContent = 'Please enter a valid amount (minimum $1)';
+        return;
+    } else {
+        messageField.textContent = '';
+    }
+
+    var handler = PaystackPop.setup({
+        key: 'pk_live_ef7d34cf55b8a86c1da377997b0705b622c9d0ae',
+        email: 'customer@email.com',
+        amount: amountValue * 100,
+        currency: 'USD',
+        ref: '' + Math.floor((Math.random() * 1000000000) + 1),
+        callback: function(response){
+            alert('Payment complete! Reference: ' + response.reference);
+        },
+        onClose: function(){
+            alert('Transaction was not completed, window closed.');
+        }
+    });
+    handler.openIframe();
+}
+</script>
+
+</html>
