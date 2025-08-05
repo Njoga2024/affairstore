@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InstaSend Payment</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin: auto;">
+
+  <h2>Make a Payment</h2>
+
+  <form id="payment-form">
+    <label for="amount">Amount (KES):</label><br/>
+    <input type="number" id="amount" name="amount" required min="1" style="width: 100%; padding: 8px; margin-bottom: 12px;" /><br/>
+
+    <label for="phone">Phone Number:</label><br/>
+    <input type="tel" id="phone" name="phone" required placeholder="07XXXXXXXX" style="width: 100%; padding: 8px; margin-bottom: 12px;" /><br/>
+
+    <button type="submit" style="padding: 10px 20px; background: #2e86de; color: white; border: none; cursor: pointer;">
+      Pay with InstaSend
+    </button>
+  </form>
+
+  <script src="https://js.intasend.com/intasend-inline.js"></script>
+  <script>
+    const form = document.getElementById("payment-form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const amount = document.getElementById("amount").value;
+      const phone = document.getElementById("phone").value;
+
+      if (!amount || !phone) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      const intasend = new window.IntaSend({
+        publicAPIKey: "ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9",
+        live: true
+      });
+
+      intasend.initialize({
+        amount: parseFloat(amount),
+        phoneNumber: phone,
+        currency: "KES",
+        email: "customer@example.com", // optional
+        firstName: "Customer",         // optional
+        lastName: "Name",              // optional
+        host: window.location.origin
+      });
+
+      intasend.on("COMPLETE", (response) => {
+        alert("Payment complete: " + JSON.stringify(response));
+      });
+
+      intasend.on("FAILED", (response) => {
+        alert("Payment failed: " + JSON.stringify(response));
+      });
+    });
+  </script>
+</body>
+</html>
