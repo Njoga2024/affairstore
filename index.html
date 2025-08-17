@@ -87,8 +87,19 @@
           <p class="text-sm text-gray-500 mb-2">$${product.price.toFixed(2)}</p>
           <p class="text-sm mb-4">${product.description}</p>
           <div class="flex flex-col gap-2 mt-2">
-            <button onclick="payWithIntaSend('${product.name}', ${product.price})"
-              class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full">
+            <input
+              type="email"
+              id="email-input-${index}"
+              placeholder="Enter your email"
+              class="border p-2 rounded mb-2"
+              oninput="validateEmailInput(${index}, '${product.name}', ${product.price})"
+            />
+            <button
+              id="pay-btn-${index}"
+              onclick="payWithIntaSend('${product.name}', ${product.price}, ${index})"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
+              disabled
+            >
               Pay with IntaSend
             </button>
           </div>
@@ -101,27 +112,49 @@
       container.innerHTML = products.map((p, i) => createProductCard(p, i)).join('');
     }
 
-    function payWithIntaSend(productName, priceUSD) {
+    window.validateEmailInput = function(index, productName, productPrice) {
+      const emailInput = document.getElementById(`email-input-${index}`);
+      const payBtn = document.getElementById(`pay-btn-${index}`);
+      if (validateEmail(emailInput.value)) {
+        payBtn.disabled = false;
+      } else {
+        payBtn.disabled = true;
+      }
+    };
+
+    function validateEmail(email) {
+      // Simple email validation
+      return /\S+@\S+\.\S+/.test(email);
+    }
+
+    window.payWithIntaSend = function(productName, priceUSD, index) {
+      const emailInput = document.getElementById(`email-input-${index}`);
+      const email = emailInput.value.trim();
       const publicKey = "ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9";
-      const email = "customer@email.com"; // You can make this dynamic for real-world use
+
+      if (!validateEmail(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
 
       IntaSend.init({
         publicAPIKey: publicKey,
         amount: priceUSD,
         currency: "USD",
         email: email,
-        redirectURL: window.location.href,
+        redirectURL: `${window.location.origin}/thank-you.html?product=${encodeURIComponent(productName)}&email=${encodeURIComponent(email)}`,
         metadata: {
           product: productName
         },
         onSuccess: function(response) {
-          alert("Payment successful for " + productName + "!");
+          // The SDK will redirect, but this is a fallback
+          window.location.href = `/thank-you.html?product=${encodeURIComponent(productName)}&email=${encodeURIComponent(email)}`;
         },
         onError: function(error) {
           alert("Payment failed: " + error.message);
         }
       });
-    }
+    };
 
     window.addEventListener('DOMContentLoaded', renderProducts);
   </script>
