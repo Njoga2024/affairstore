@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IntaSend Payment Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://js.intasend.com/intasend-inline.js"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded shadow w-full max-w-md text-center">
+    <h2 class="text-xl font-bold mb-4">Test IntaSend Payment</h2>
+    <input type="email" id="email" class="border p-2 rounded w-full mb-3" placeholder="Enter your email" />
+    <button id="pay-btn"
+      class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
+      onclick="payWithIntaSend()"
+    >
+      Pay $10.00 with IntaSend
+    </button>
+  </div>
+  <script>
+    function validateEmail(email) {
+      return /\S+@\S+\.\S+/.test(email);
+    }
+    function payWithIntaSend() {
+      const email = document.getElementById('email').value.trim();
+      if (!validateEmail(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+      IntaSend.inline({
+        publicAPIKey: "ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9",
+        amount: 10.00,
+        currency: "USD",
+        email: email,
+        redirectURL: window.location.href,
+        metadata: { product: "Test Product" },
+        onSuccess: function (response) {
+          alert("Payment successful!");
+        },
+        onError: function (error) {
+          alert("Payment failed: " + error.message);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
