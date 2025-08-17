@@ -92,7 +92,7 @@
               id="email-input-${index}"
               placeholder="Enter your email"
               class="border p-2 rounded mb-2"
-              oninput="validateEmailInput(${index}, '${product.name}', ${product.price})"
+              oninput="validateEmailInput(${index})"
             />
             <button
               id="pay-btn-${index}"
@@ -112,7 +112,7 @@
       container.innerHTML = products.map((p, i) => createProductCard(p, i)).join('');
     }
 
-    window.validateEmailInput = function(index, productName, productPrice) {
+    window.validateEmailInput = function(index) {
       const emailInput = document.getElementById(`email-input-${index}`);
       const payBtn = document.getElementById(`pay-btn-${index}`);
       if (validateEmail(emailInput.value)) {
@@ -123,7 +123,6 @@
     };
 
     function validateEmail(email) {
-      // Simple email validation
       return /\S+@\S+\.\S+/.test(email);
     }
 
@@ -137,7 +136,7 @@
         return;
       }
 
-      IntaSend.init({
+      IntaSend.inline({
         publicAPIKey: publicKey,
         amount: priceUSD,
         currency: "USD",
@@ -147,7 +146,6 @@
           product: productName
         },
         onSuccess: function(response) {
-          // The SDK will redirect, but this is a fallback
           window.location.href = `/thank-you.html?product=${encodeURIComponent(productName)}&email=${encodeURIComponent(email)}`;
         },
         onError: function(error) {
@@ -158,6 +156,5 @@
 
     window.addEventListener('DOMContentLoaded', renderProducts);
   </script>
-
 </body>
 </html>
