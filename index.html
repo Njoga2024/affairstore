@@ -6,8 +6,15 @@
   <title>MyDigitalHub - Digital Subscriptions</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Expose public key globally (so diagnostics and other scripts can read it).
+       WARNING: avoid committing live keys to public repos. Use test key in dev. -->
+  <script>
+    window.INTASEND_PUBLIC_KEY = 'ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9';
+    console.log('INTASEND_PUBLIC_KEY set on window (hidden in production).');
+  </script>
+
   <!-- Primary IntaSend inline SDK attempt -->
-  <script src="https://js.intasend.com/intasend-inline.js"></script>
+  <script src="https://js.intasend.com/intasend-inline.js" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 min-h-screen flex flex-col">
 
@@ -17,10 +24,18 @@
       <img src="assets/logo.png" alt="MyDigitalHub logo" class="h-10 w-10 object-cover rounded-md"/>
       <h1 class="text-2xl font-bold text-blue-600">MyDigitalHub</h1>
     </div>
-    <nav class="hidden md:flex">
+    <nav class="hidden md:flex items-center gap-4">
       <a href="#" class="px-4 text-gray-700 hover:text-blue-500">Home</a>
       <a href="#products" class="px-4 text-gray-700 hover:text-blue-500">Products</a>
       <a href="#contact" class="px-4 text-gray-700 hover:text-blue-500">Contact</a>
+
+      <!-- Diagnostic button -->
+      <button
+        id="run-diagnostic"
+        onclick="runPaymentDiagnostic && runPaymentDiagnostic()"
+        class="ml-4 bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-3 rounded"
+        title="Run quick payment integration diagnostics"
+      >Run Payment Diagnostic</button>
     </nav>
   </header>
 
@@ -65,7 +80,8 @@
       { name: 'TikTok 18+', price: 4.00, description: 'Exclusive access to 18+ content on TikTok.', image: 'assets/tiktok.jpg' }
     ];
 
-    const INTASEND_PUBLIC_KEY = "ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9";
+    // If the code expects INTASEND_PUBLIC_KEY as a constant, ensure it falls back to the window value
+    const INTASEND_PUBLIC_KEY = (typeof window !== 'undefined' && window.INTASEND_PUBLIC_KEY) ? window.INTASEND_PUBLIC_KEY : 'ISPubKey_live_908361d5-cdb8-4590-98cc-06dc4889cbb9';
 
     // Create product HTML
     function createProductCard(product, index) {
@@ -236,8 +252,11 @@
       });
 
       // Print quick diagnostic to console on load
-      console.log("Page loaded. IntaSend available?", !!window.IntaSend, "IntaSend.inline exists?", window.IntaSend && typeof window.IntaSend.inline === 'function');
+      console.log("Page loaded. INTASEND_PUBLIC_KEY present?", !!window.INTASEND_PUBLIC_KEY, "IntaSend available?", !!window.IntaSend, "IntaSend.inline exists?", window.IntaSend && typeof window.IntaSend.inline === 'function');
     });
   </script>
+
+  <!-- Include the diagnostic helper (after the page scripts) -->
+  <script src="payment-diagnostic.js"></script>
 </body>
 </html>
